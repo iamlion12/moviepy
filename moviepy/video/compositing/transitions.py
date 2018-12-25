@@ -105,10 +105,11 @@ def slide_out(clip, duration, side):
 
     w, h = clip.size
     ts = clip.duration - duration  # start time of the effect.
-    pos_dict = {'left': lambda t: (min(0, w*(1-(t-ts)/duration)), 'center'),
-                'right': lambda t: (max(0, w*((t-ts)/duration-1)), 'center'),
-                'top': lambda t: ('center', min(0, h*(1-(t-ts)/duration))),
-                'bottom': lambda t: ('center', max(0, h*((t-ts)/duration-1)))}
+    # Bug Fix: previous functions was incorrect
+    pos_dict = {'right' : lambda t: (-w * min(ts-t, 0)/duration, 'center'),
+                'left' : lambda t: (w * min(ts-t, 0)/duration, 'center'),
+                'top' : lambda t: ('center', h*min(ts-t, 0)/duration),
+                'bottom' : lambda t: ('center', -h*min(ts-t, 0)/duration)}
 
     return clip.set_position(pos_dict[side])
 
